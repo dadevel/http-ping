@@ -1,0 +1,24 @@
+[project]
+name = "httpping"
+version = "0.0.1"
+description = ""
+authors = [
+    {name = "dadevel",email = "dadevel@disroot.org"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "requests (>=2.32.3,<3.0.0)",
+    "requests-ntlm (>=1.3.0,<2.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "httpping"}]
+
+[project.scripts]
+http-ping = "httpping.main:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
