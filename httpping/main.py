@@ -18,6 +18,8 @@ from spnego._ntlm_raw.messages import Challenge
 from spnego._spnego import unpack_token
 import spnego
 
+from passlib.hash import nthash as passlib_nthash
+
 session = Session()
 session.verify = False
 
@@ -62,7 +64,7 @@ def ping(opts: Namespace, target: str) -> dict[str, Any]:
     if 'basic' in auth_methods and username:
         auth = HTTPBasicAuth(username, opts.password)
     elif 'ntlm' in auth_methods:
-        nthash = opts.hash if opts.hash else hashlib.new('md4', opts.password.encode('utf-16le')).hexdigest()
+        nthash = opts.hash if opts.hash else passlib_nthash.hash(opts.password)
         auth = HttpNtlmAuth(username, nthash, send_cbt=True)
     else:
         return make_result(target, test1, authentication=auth_methods, channel_binding=None, ntlm_info=None)
