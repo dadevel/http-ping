@@ -2,7 +2,6 @@ from argparse import ArgumentParser, Namespace
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 import base64
-import hashlib
 import itertools
 import json
 import re
@@ -16,6 +15,7 @@ import urllib3
 from spnego import NTLMHash
 from spnego._ntlm_raw.messages import Challenge
 from spnego._spnego import unpack_token
+from spnego._ntlm_raw.md4 import md4
 import spnego
 
 session = Session()
@@ -62,7 +62,7 @@ def ping(opts: Namespace, target: str) -> dict[str, Any]:
     if 'basic' in auth_methods and username:
         auth = HTTPBasicAuth(username, opts.password)
     elif 'ntlm' in auth_methods:
-        nthash = opts.hash if opts.hash else hashlib.new('md4', opts.password.encode('utf-16le')).hexdigest()
+        nthash = opts.hash if opts.hash else md4(opts.password.encode('utf-16le')).hex()
         auth = HttpNtlmAuth(username, nthash, send_cbt=True)
     else:
         return make_result(target, test1, authentication=auth_methods, channel_binding=None, ntlm_info=None)
